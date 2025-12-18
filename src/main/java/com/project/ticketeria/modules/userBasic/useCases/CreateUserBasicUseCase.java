@@ -13,6 +13,7 @@ import com.project.ticketeria.modules.userBasic.UserBasicEntity;
 import com.project.ticketeria.modules.userBasic.UserBasicRepository;
 import com.project.ticketeria.modules.userBasic.dtos.RequestUserDTO;
 import com.project.ticketeria.modules.userBasic.dtos.ResponseUserDTO;
+import com.project.ticketeria.modules.userBasic.enums.RoleEnum;
 
 @Service
 public class CreateUserBasicUseCase {
@@ -42,7 +43,7 @@ public class CreateUserBasicUseCase {
         try {
             dateOfBirthNew = LocalDate.parse(userDTO.getDateOfBirth(), formatter);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid Date format of DateOfBirth");
+            throw new IllegalArgumentException("Invalid Date format of DateOfBirth (yyyy-MM-dd)");
         }
 
         // criar entidade
@@ -55,6 +56,7 @@ public class CreateUserBasicUseCase {
         userSave.setAdress(userDTO.getAdress());
         userSave.setDateOfBirth(dateOfBirthNew);
         userSave.setGender(userDTO.getGender());
+        userSave.setRole(RoleEnum.USER);
         userSave.setDeleted(false);
         userSave.setCash(0.0);
 
@@ -71,6 +73,7 @@ public class CreateUserBasicUseCase {
                 .phone(userSaved.getPhone())
                 .adress(userSaved.getAdress())
                 .gender(userSaved.getGender())
+                .role(userSaved.getRole())
                 .dateOfBirth(userSaved.getDateOfBirth())
                 .createdAt(userSaved.getCreatedAt())
                 .updatedAt(userSaved.getUpdatedAt())

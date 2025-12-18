@@ -2,12 +2,18 @@ package com.project.ticketeria.modules.userBasic;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.project.ticketeria.modules.userBasic.enums.GenderEnum;
+import com.project.ticketeria.modules.userBasic.enums.RoleEnum;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -26,7 +32,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Table(name = "user_basic")
-public class UserBasicEntity {
+public class UserBasicEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -51,6 +57,9 @@ public class UserBasicEntity {
     @Enumerated(value = EnumType.STRING)
     private GenderEnum gender;
 
+    @Enumerated(value = EnumType.STRING)
+    private RoleEnum role;
+
     private LocalDate dateOfBirth;
 
     @CreationTimestamp
@@ -60,5 +69,10 @@ public class UserBasicEntity {
     private LocalDateTime updatedAt;
     private boolean deleted;
     private Double cash;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
 
 }

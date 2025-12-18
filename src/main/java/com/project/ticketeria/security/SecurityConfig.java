@@ -2,6 +2,8 @@ package com.project.ticketeria.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,8 +18,9 @@ public class SecurityConfig {
             "/swagger-resources/**"
     };
 
-    private static final String[] RESTAURANT_LIST = {
-            "/user/create",
+    private static final String[] USER_LIST = {
+            "/auth/create",
+            "/auth/login"
     };
 
     @Bean
@@ -26,11 +29,17 @@ public class SecurityConfig {
     }
 
     @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        // permite que faça a autenticação do email e senha no processo de auth no login
+        return configuration.getAuthenticationManager();
+    }
+
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(SWAGGER_LIST).permitAll()
-                            .requestMatchers(RESTAURANT_LIST).permitAll();
+                            .requestMatchers(USER_LIST).permitAll();
                     auth.anyRequest().authenticated();
                 });
         return http.build();

@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ticketeria.exceptions.UserFoundCPFException;
+import com.project.ticketeria.exceptions.UserFoundEmailException;
+import com.project.ticketeria.modules.userBasic.dtos.AuthUserBasicDTO;
 import com.project.ticketeria.modules.userBasic.dtos.RequestUserDTO;
+import com.project.ticketeria.modules.userBasic.useCases.AuthenticationUserBasicUseCase;
 import com.project.ticketeria.modules.userBasic.useCases.CreateUserBasicUseCase;
 
 import jakarta.validation.Valid;
@@ -17,10 +20,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/auth")
 public class UserBasicController {
     @Autowired
     private CreateUserBasicUseCase createUserBasicUseCase;
+
+    @Autowired
+    private AuthenticationUserBasicUseCase authenticationUserBasicUseCase;
 
     @PostMapping("/create")
     @Tag(name = "User", description = "Ações e funções do usuário do tipo User")
@@ -30,11 +36,28 @@ public class UserBasicController {
             var response = this.createUserBasicUseCase.execute(request);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
         } catch (UserFoundCPFException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.fillInStackTrace());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/login")
+    @Tag(name = "User", description = "Ações e funções do usuário do tipo User")
+    @Operation(summary = "Login do Usuário")
+    public ResponseEntity<Object> login(@Valid @RequestBody AuthUserBasicDTO request) {
+        try {
+            var response = this.authenticationUserBasicUseCase.execute(request);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+        } catch (UserFoundEmailException e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    // logout
 
 }
