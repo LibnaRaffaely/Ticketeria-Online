@@ -10,13 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.ticketeria.exceptions.UserFoundCPFException;
 import com.project.ticketeria.exceptions.UserFoundEmailException;
+import com.project.ticketeria.modules.token.useCases.LogoutUserBasicUseCase;
 import com.project.ticketeria.modules.userBasic.dtos.AuthUserBasicDTO;
 import com.project.ticketeria.modules.userBasic.dtos.RequestUserDTO;
 import com.project.ticketeria.modules.userBasic.useCases.AuthenticationUserBasicUseCase;
 import com.project.ticketeria.modules.userBasic.useCases.CreateUserBasicUseCase;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -27,6 +30,9 @@ public class UserBasicController {
 
     @Autowired
     private AuthenticationUserBasicUseCase authenticationUserBasicUseCase;
+
+    @Autowired
+    private LogoutUserBasicUseCase logoutUserBasicUseCase;
 
     @PostMapping("/create")
     @Tag(name = "User", description = "Ações e funções do usuário do tipo User")
@@ -59,5 +65,18 @@ public class UserBasicController {
     }
 
     // logout
-
+    @PostMapping("/logout")
+    @Tag(name = "User", description = "Ações e funções do usuário do tipo User")
+    @Operation(summary = "Logout do Usuário")
+    @SecurityRequirement(name = "jwt_auth")
+    public ResponseEntity<Object> logout(HttpServletRequest request) {
+        try {
+            String authHeader = request.getHeader("Authorization");
+            this.logoutUserBasicUseCase.execute(authHeader);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Logout realizado com sucesso");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

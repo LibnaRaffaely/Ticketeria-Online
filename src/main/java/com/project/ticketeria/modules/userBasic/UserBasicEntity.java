@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.project.ticketeria.modules.userBasic.enums.GenderEnum;
 import com.project.ticketeria.modules.userBasic.enums.RoleEnum;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -39,10 +40,11 @@ public class UserBasicEntity implements UserDetails {
 
     @NotBlank
     @Pattern(regexp = "^[\\p{L} ]+$", message = "O campo [Name] não deve conter carcteres")
-    private String username;
+    private String name;
 
     @NotBlank
     @Email(message = "O campo [Email] deve conter um e-mail válido")
+    @Column(unique = true)
     private String email;
 
     @NotBlank
@@ -75,4 +77,8 @@ public class UserBasicEntity implements UserDetails {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
 }

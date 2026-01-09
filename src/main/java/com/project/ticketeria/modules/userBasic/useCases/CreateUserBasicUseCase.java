@@ -48,7 +48,7 @@ public class CreateUserBasicUseCase {
 
         // criar entidade
         var userSave = new UserBasicEntity();
-        userSave.setUsername(userDTO.getUsername());
+        userSave.setName(userDTO.getName());
         userSave.setEmail(userDTO.getEmail());
         userSave.setCpf(userDTO.getCpf());
         userSave.setPhone(userDTO.getPhone());
