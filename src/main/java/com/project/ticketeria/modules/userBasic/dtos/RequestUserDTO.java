@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class RequestUserDTO {
 
     @NotBlank
-    private String username;
+    private String name;
 
     @NotBlank
     @Email

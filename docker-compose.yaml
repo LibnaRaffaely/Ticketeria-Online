@@ -9,4 +9,9 @@ services:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin20
       - POSTGRES_DB=ticketeria_online
-  
+  redis:
+    image: redis:latest
+    container_name: redis-ticketeria
+    ports:
+      - "6379:6379"
+    restart: always

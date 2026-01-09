@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.project.ticketeria.modules.userBasic.enums.GenderEnum;
+import com.project.ticketeria.modules.userBasic.enums.RoleEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,6 +30,7 @@ public class ResponseUserDTO {
 
     private String adress;
     private GenderEnum gender;
+    private RoleEnum role;
     private LocalDate dateOfBirth;
 
     private LocalDateTime createdAt;
